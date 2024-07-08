@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	color "github.com/fatih/color"
+
 )
 
 type VehicleInfo struct {
@@ -44,32 +45,23 @@ func vinLookup(vin string) (*VehicleInfo, error) {
 		return nil, err
 	}
 
-	var data map[string][]VehicleInfo
+	var data struct {
+		Results []VehicleInfo `json:"Results"`
+	}
 	if err := json.Unmarshal(body, &data); err != nil {
 		return nil, err
 	}
 
-	if len(data["Results"]) == 0 {
+	if len(data.Results) == 0 {
 		return nil, fmt.Errorf("VIN not found or no results returned")
 	}
 
-	return &data["Results"][0], nil
+	return &data.Results[0], nil
 }
 
 func printVehicleInfo(info *VehicleInfo) {
 	yellow := color.New(color.FgYellow).SprintFunc()
 	cyan := color.New(color.FgCyan).SprintFunc()
-
-	fmt.Println(`
-  #  #     #           #  #     #                        
-  #  #                 #  #                              
-  #  #    ##    ###    #  #    ##    ####    ##    # #   
-  ####     #    #  #   ####     #      ##   #  #   ## #  
-   ##      #    #  #    ##      #    ##     #  #   #     
-   ##     ###   #  #    ##     ###   ####    ##    #     
-                                                        
-                                                        
-	`)
 	fmt.Printf("VIN: %s\n", yellow(info.VIN))
 	fmt.Printf("Make: %s\n", cyan(info.Make))
 	fmt.Printf("Model: %s\n", cyan(info.Model))
@@ -82,6 +74,16 @@ func printVehicleInfo(info *VehicleInfo) {
 }
 
 func main() {
+	fmt.Println(`
+  #  #     #           #  #     #                        
+  #  #                 #  #                              
+  #  #    ##    ###    #  #    ##    ####    ##    # #   
+  ####     #    #  #   ####     #      ##   #  #   ## #  
+   ##      #    #  #    ##      #    ##     #  #   #     
+   ##     ###   #  #    ##     ###   ####    ##    #     
+                                                        
+                                                        
+	`)
 	var vin string
 	fmt.Print("Enter VIN #: ")
 	fmt.Scanln(&vin)
