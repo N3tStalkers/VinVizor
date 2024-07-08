@@ -85,7 +85,7 @@ func main() {
                                                         
 	`)
 	var vin string
-	fmt.Print("Enter VIN #: ")
+	fmt.Print("Enter VIN : ")
 	fmt.Scanln(&vin)
 
 	info, err := vinLookup(vin)
